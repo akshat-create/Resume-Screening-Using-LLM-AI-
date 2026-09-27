@@ -1,7 +1,7 @@
 [project]
-name = "day5"
+name = "resume-screening-llm"
 version = "0.1.0"
-description = "Add your description here"
+description = "AI-powered resume parsing and candidate screening with Groq"
 readme = "README.md"
 authors = [
     { name = "akshat-create", email = "akshatpandey9198@gmail.com" }
@@ -15,14 +15,6 @@ dependencies = [
     "python-dotenv>=1.2.3",
 ]
 
-[project.scripts]
-day5 = "day5:main"
-
 [build-system]
 requires = ["uv_build>=0.12.19,<0.13.0"]
 build-backend = "uv_build"
-
-[tool.uv.workspace]
-members = [
-    "resume",
-]
