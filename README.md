@@ -1,32 +1,38 @@
 # AI Resume Screening
 
-A command-line AI tool that reads résumés, extracts structured candidate information, and ranks candidates against a job description.
+An AI-powered command-line tool that reads PDF and DOCX resumes, compares them with a job description, and ranks candidates by match score.
 
-It uses Groq's LLM API to turn unstructured PDF and DOCX résumés into a consistent schema, then produces a score and concise hiring-relevance summary for each candidate.
+It is built to help a recruiter review candidates faster. It does **not** make hiring decisions automatically.
 
-> This project is intended to support human review—not to make automated hiring decisions. Review all results for accuracy, fairness, and context before acting on them.
+## What it does
 
-## Features
+For every resume in the `resumes/` folder, the project:
 
-- Extracts text from PDF and DOCX résumés.
-- Parses skills, work history, education, projects, and certifications into structured data.
-- Extracts requirements from a job description.
-- Scores and ranks candidates from 0–100 against the role.
-- Returns matching skills, missing skills, experience fit, and a brief verdict.
-- Keeps API keys and candidate documents out of version control.
+1. Reads the PDF or DOCX file.
+2. Extracts the candidate's skills, education, projects, and experience.
+3. Compares that information with the job description in `resume_parser.py`.
+4. Gives a match score from 0 to 100.
+5. Prints the strongest and weakest matches with an easy-to-read explanation.
 
-## Tech stack
+Example output:
 
-- Python 3.14+
-- [Groq](https://console.groq.com/)
-- Pydantic
-- PyPDF
-- python-docx
-- uv (recommended dependency manager)
+```text
+Processing: candidate_resume.pdf
+Score: 85.0
 
-## Getting started
+TOP 2 CANDIDATES
+Candidate Name - 85.0%
+```
 
-### 1. Clone the repository
+## Requirements
+
+- Python 3.14 or newer
+- A free or paid [Groq API key](https://console.groq.com/keys)
+- [uv](https://docs.astral.sh/uv/) (recommended)
+
+## Quick start
+
+### 1. Clone the project
 
 ```bash
 git clone https://github.com/akshat-create/Resume-Screening-Using-LLM-AI-.git
@@ -35,81 +41,114 @@ cd Resume-Screening-Using-LLM-AI-
 
 ### 2. Install dependencies
 
-Using [uv](https://docs.astral.sh/uv/):
-
 ```bash
 uv sync
 ```
 
-Or with pip:
+This creates a local `.venv` environment and installs everything the project needs.
 
-```bash
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\\Scripts\\activate
-pip install groq pydantic pypdf python-docx python-dotenv
-```
+### 3. Add your Groq API key
 
-### 3. Configure your API key
-
-Create a local `.env` file in the project root:
+Create a file named `.env` in the project folder:
 
 ```env
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-Get an API key from the [Groq Console](https://console.groq.com/keys). Never commit `.env`; it is already ignored by Git.
+Get your key from the [Groq Console](https://console.groq.com/keys).
 
-### 4. Add résumés locally
+### 4. Add resumes
 
-Create a `resumes/` directory and place PDF or DOCX files inside it:
-
-```bash
-mkdir -p resumes
-```
-
-Candidate files are intentionally ignored by Git to avoid publishing personal information.
-
-### 5. Run the screener
-
-```bash
-uv run python resume_parser.py
-```
-
-The script reads the job description defined in `resume_parser.py`, processes each supported file in `resumes/`, and prints the top two and lowest two candidates with their match details.
-
-## How it works
+Put the PDF or DOCX files you want to screen inside the `resumes/` folder:
 
 ```text
-Job description ──> LLM extracts role requirements
-                                      │
-Local PDF/DOCX résumés ──> text extraction ──> LLM parses candidate data
-                                      │
-                         requirement comparison and score (0–100)
-                                      │
-                                ranked candidate output
+resumes/
+├── candidate_one.pdf
+└── candidate_two.docx
+```
+
+### 5. Run the project
+
+```bash
+.venv/bin/python resume_parser.py
+```
+
+On Windows, use:
+
+```powershell
+.venv\Scripts\python.exe resume_parser.py
+```
+
+The project sends the job description and resume text to Groq for analysis. It pauses briefly between requests, so allow it to finish before closing the terminal.
+
+## Change the job description
+
+Open `resume_parser.py` and edit the text assigned to `job_description` near the top of the file. For example, replace the current Software Development Engineer description with the role you want to screen for.
+
+You can also change the Groq model by editing this line:
+
+```python
+model = "openai/gpt-oss-120b"
 ```
 
 ## Project structure
 
 ```text
 .
-├── resume_parser.py   # Extraction, parsing, scoring, and ranking workflow
-├── pyproject.toml     # Project metadata and dependencies
-├── uv.lock            # Reproducible dependency lockfile
-├── src/resume_screening_llm/  # Python package
-└── resumes/           # Local candidate files (visible, contents ignored by Git)
+├── resume_parser.py              # Main program
+├── resumes/                      # Add local PDF and DOCX files here
+├── src/resume_screening_llm/     # Python package
+├── pyproject.toml                # Dependencies and project settings
+├── uv.lock                       # Locked dependency versions
+└── README.md                     # Project guide
 ```
 
-## Configuration notes
+## Common problems
 
-- Change `job_description` in `resume_parser.py` to screen for another role.
-- The default model is `openai/gpt-oss-120b` through Groq. Ensure your Groq account can access it, or change the `model` value to an available model.
-- The script pauses between requests to reduce the chance of rate-limit errors.
+### `zsh: command not found: python`
+
+Use the project environment directly:
+
+```bash
+.venv/bin/python resume_parser.py
+```
+
+### `ModuleNotFoundError: No module named 'dotenv'`
+
+Dependencies have not been installed in this project yet. Run:
+
+```bash
+uv sync
+```
+
+Then run the project again with:
+
+```bash
+.venv/bin/python resume_parser.py
+```
+
+### The program stops with `KeyboardInterrupt`
+
+The program was stopped manually with `Ctrl+C`. Run it again and wait; it intentionally pauses for a few seconds between API requests.
+
+### Groq connection or API-key error
+
+Check that:
+
+- `.env` exists in the project folder.
+- The key is written as `GROQ_API_KEY=...`.
+- Your internet connection is working.
+- Your Groq account can access the selected model.
 
 ## Privacy and responsible use
 
-Résumés can contain sensitive personal information. This repository does not include sample candidate files, API keys, or environment files. Use the tool only with appropriate authorization, protect any local input files, and keep a human in the decision loop.
+Resumes may contain personal information. `.env`, virtual environments, and the contents of `resumes/` are ignored by Git, so they are not uploaded to this repository. Only screen resumes you are authorized to use, and always have a person review the final results.
 
-## License
+## Tech used
 
-No license has been selected yet. Add one before reusing or distributing this project.
+- Python
+- Groq API
+- Pydantic
+- PyPDF
+- python-docx
+- python-dotenv
