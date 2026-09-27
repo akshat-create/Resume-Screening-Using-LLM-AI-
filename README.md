@@ -29,9 +29,8 @@ It uses Groq's LLM API to turn unstructured PDF and DOCX résumés into a consis
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/akshat-create/Resume-Screening-Using-LLA-AI-.git
-cd Resume-Screening-Using-LLA-AI-
-cd Resume_Screening_LLM
+git clone https://github.com/akshat-create/Resume-Screening-Using-LLM-AI-.git
+cd Resume-Screening-Using-LLM-AI-
 ```
 
 ### 2. Install dependencies
@@ -98,7 +97,7 @@ Local PDF/DOCX résumés ──> text extraction ──> LLM parses candidate da
 ├── pyproject.toml     # Project metadata and dependencies
 ├── uv.lock            # Reproducible dependency lockfile
 ├── src/resume_screening_llm/  # Python package
-└── resumes/           # Local candidate files (ignored by Git)
+└── resumes/           # Local candidate files (visible, contents ignored by Git)
 ```
 
 ## Configuration notes

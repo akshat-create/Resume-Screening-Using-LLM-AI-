@@ -17,7 +17,9 @@ wheels/
 !.env.example
 
 # Candidate documents may contain personal data. Keep them local.
-resumes/
+# The placeholder keeps this folder visible on GitHub without publishing résumés.
+resumes/*
+!resumes/.gitkeep
 
 # Operating-system files
 .DS_Store
