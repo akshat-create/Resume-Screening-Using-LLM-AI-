@@ -1,0 +1,23 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+.venv/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Candidate documents may contain personal data. Keep them local.
+resumes/
+
+# Operating-system files
+.DS_Store
